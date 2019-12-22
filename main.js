@@ -1,7 +1,28 @@
-/**
- * @author Tobias Briones
+/*
+ * This file is part of example.cs.optimization.algorithm.web.point2d_ga = Point2D GA.
+ *
+ * Point2D GA is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Point2D GA is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Point2D GA.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+/*
+ * Copyright (c) 2019 Tobias Briones
+ */
+
+/**
+ * Defines the genetic algorithm to apply to the Point2D problem.
+ * @author Tobias Briones
+ */
 class GeneticAlgorithm {
     
     constructor(target) {
@@ -26,7 +47,7 @@ class GeneticAlgorithm {
         const getDistance = (p1, p2) => {
             return Math.sqrt(Math.pow(p1.x - p2.x, 2) + Math.pow(p1.y - p2.y, 2));
         }
-        const evalModifiedSigmoid = x => {
+        const evalModifiedSigmoid = (x) => {
             // Slow dowm the exponential grow for values near [0, 100]
             x /= 25;
             return -2 * Math.pow(Math.E, x) / (Math.pow(Math.E, x) + 1) + 2;
@@ -135,33 +156,15 @@ class GeneticAlgorithm {
             k++;
             
         }, 50);
-        /*
-        for(let i = 0; i < this.threshold; i++) {
-            this.select();
-            this.crossover();
-            this.mutate();
-            
-            for(let i = 3; i < this.n; i++) {
-                this.population[i] = this.newIndividual();
-                
-            }
-            this.population[0] = this.bestParent;
-            this.population[1] = this.secondBestParent;
-            this.population[2] = this.offspring;
-            
-            console.log(`New generation ready ${JSON.stringify(this.population)}`);
-            console.log("------------------------------------------------------------")
-            callback(this.bestParent, this.bestFit);
-            
-            
-        }*/
     }
 }
 
-const target = { x : 125, y : 270 };
+const target = { x: 125, y: 270 };
 const ga = new GeneticAlgorithm(target);
 const gridEl = document.getElementById('grid');
 const fitDiv = document.getElementById('fit');
+
+// I did't implement the worker yet
 /*const worker = new Worker('worker.js');
 
 worker.postMessage();
