@@ -14,26 +14,22 @@ class GeneticAlgorithm {
         this.secondBestParent = null;
         this.offspring = null;
         this.bestFit = -1;
-        
     }
     
     newIndividual = () => {
         const x = Math.random() * 400;
         const y = Math.random() * 400;
         return { x : x, y : y};
-        
     }
     
     fitness = (individual) => {
         const getDistance = (p1, p2) => {
             return Math.sqrt(Math.pow(p1.x - p2.x, 2) + Math.pow(p1.y - p2.y, 2));
-            
         }
         const evalModifiedSigmoid = x => {
             // Slow dowm the exponential grow for values near [0, 100]
             x /= 25;
             return -2 * Math.pow(Math.E, x) / (Math.pow(Math.E, x) + 1) + 2;
-            
         }
         const distance = getDistance(individual, this.target);
         
@@ -47,7 +43,6 @@ class GeneticAlgorithm {
         // If distance = 50, fitness is 23
         // If distance = 100, fitness is 3
         return sigmoid * 100;
-        
     }
     
     select = () => {
@@ -62,21 +57,17 @@ class GeneticAlgorithm {
             if(fitness > firstScore) {
                 firstScore = fitness;
                 first = individual;
-                
             }
             else if(fitness > secondScore) {
                 secondScore = fitness;
                 second = individual;
-                
             }
-            
         });
         this.bestParent = first;
         this.secondBestParent = second;
         this.bestFit = firstScore;
         
-        console.log(`Selection ${JSON.stringify(this.bestParent)} and ${JSON.stringify(this.secondBestParent)}`);
-        
+        // console.log(`Selection ${JSON.stringify(this.bestParent)} and ${JSON.stringify(this.secondBestParent)}`);
     }
     
     crossover = () => {
@@ -93,15 +84,11 @@ class GeneticAlgorithm {
         // Kill one of them < jajaja >
         if(this.fitness(offspring1) < this.fitness(offspring2)) {
             this.offspring = offspring2;
-            
         }
         else {
             this.offspring = offspring1;
-            
         }
-        
-        console.log(`Offspring ${JSON.stringify(this.offspring)}`);
-        
+        // console.log(`Offspring ${JSON.stringify(this.offspring)}`);
     }
     
     mutate = () => {
@@ -111,9 +98,7 @@ class GeneticAlgorithm {
             
             this.offspring.x += mx;
             this.offspring.y += my;
-            
         }
-        
     }
     
     start = (callback) => {
@@ -122,10 +107,9 @@ class GeneticAlgorithm {
         
         for(let i = 0; i < this.n; i++) {
             this.population.push(this.newIndividual());
-            
         }
-        console.log(`Target ${JSON.stringify(this.target)}`);
-        console.log(`Initial population ${JSON.stringify(this.population)}`);
+        // console.log(`Target ${JSON.stringify(this.target)}`);
+        // console.log(`Initial population ${JSON.stringify(this.population)}`);
         
         // Start the algorithm
         // Each iteration is a new generation
@@ -137,18 +121,16 @@ class GeneticAlgorithm {
              
             for(let i = 3; i < this.n; i++) {
                 this.population[i] = this.newIndividual();
-                    
             }
             this.population[0] = this.bestParent;
             this.population[1] = this.secondBestParent;
             this.population[2] = this.offspring;
             
-            console.log(`New generation ready ${JSON.stringify(this.population)}`);
-            console.log("------------------------------------------------------------")
+            // console.log(`New generation ready ${JSON.stringify(this.population)}`);
+            // console.log("------------------------------------------------------------")
             callback(this.bestParent, this.bestFit);
             if(k >= this.threshold) {
                 clearInterval(i);
-                
             }
             k++;
             
@@ -173,13 +155,12 @@ class GeneticAlgorithm {
             
             
         }*/
-        
     }
-    
 }
+
 const target = { x : 125, y : 270 };
 const ga = new GeneticAlgorithm(target);
-const grid = document.getElementById('grid');
+const gridEl = document.getElementById('grid');
 const fitDiv = document.getElementById('fit');
 /*const worker = new Worker('worker.js');
 
@@ -197,31 +178,25 @@ const drawPoint = (x, y, red) => {
     
     if(red) {
         ctx.fillStyle = "#FF0000";
-        
     }
     else {
         ctx.fillStyle = "#000000";
-        
     }
     ctx.beginPath();
     ctx.arc(x, y, 8, 0, 2 * Math.PI);
     ctx.fill();
-    
 }
 
 const updateCanvas = () => {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     drawPoint(target.x, target.y, true);
-    
 }
-
 
 ga.start((strongest, fit) => {
     updateCanvas();
     drawPoint(strongest.x, strongest.y);
     fitDiv.innerHTML = fit + '%';
         
-    console.log(`Fit ${fit}`);
-    console.log(strongest);
-    
+    // console.log(`Fit ${fit}`);
+    // console.log(strongest);
 });
