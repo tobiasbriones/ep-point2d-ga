@@ -1,5 +1,5 @@
 # Example Project - Point2D GA
-[![License](https://img.shields.io/github/license/TobiasBriones/example.cs.optimization.algorithm.web.point2d_ga)](https://github.com/TobiasBriones/example.cs.optimization.algorithm.web.point2d_ga/blob/master/LICENSE)
+
 
 Javascript with canvas implementation of a genetic algorithm to make a point in the plane to converge to the desired location.
 
