@@ -9,3 +9,10 @@ the genetic algorithm.
 [![Screenshot 1](https://raw.githubusercontent.com/TobiasBriones/images/master/example-projects/example.cs.optimization.algorithm.web.point2d-ga/screenshot-1.png)](https://github.com/TobiasBriones/images/tree/master/example-projects)
 [![Screenshot 2](https://raw.githubusercontent.com/TobiasBriones/images/master/example-projects/example.cs.optimization.algorithm.web.point2d-ga/screenshot-2.png)](https://github.com/TobiasBriones/images/tree/master/example-projects)
 [![Screenshot 3](https://raw.githubusercontent.com/TobiasBriones/images/master/example-projects/example.cs.optimization.algorithm.web.point2d-ga/screenshot-3.png)](https://github.com/TobiasBriones/images/tree/master/example-projects)
+
+## License
+Example Project - Point2D GA
+
+Copyright © 2019-2020 Tobias Briones. All rights reserved.
+
+This software is licensed under the [MIT License](https://github.com/TobiasBriones/example.cs.optimization.algorithm.web.point2d-ga/blob/master/LICENSE).
