@@ -15,8 +15,12 @@ into account is the job of the genetic algorithm.
 ## Screenshots
 
 [![Screenshot 1](https://raw.githubusercontent.com/TobiasBriones/images/main/example-projects/example.cs.optimization.algorithm.web.point2d-ga/screenshot-1.png)](https://github.com/TobiasBriones/images/tree/main/example-projects)
-&nbsp;&nbsp;&nbsp;&nbsp;
+
+---
+
 [![Screenshot 2](https://raw.githubusercontent.com/TobiasBriones/images/main/example-projects/example.cs.optimization.algorithm.web.point2d-ga/screenshot-2.png)](https://github.com/TobiasBriones/images/tree/main/example-projects)
+
+---
 
 [![Screenshot 3](https://raw.githubusercontent.com/TobiasBriones/images/main/example-projects/example.cs.optimization.algorithm.web.point2d-ga/screenshot-3.png)](https://github.com/TobiasBriones/images/tree/main/example-projects)
 
