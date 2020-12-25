@@ -51,8 +51,8 @@ class GeneticAlgorithm {
     };
     const evalModifiedSigmoid = x => {
       // Slow down the exponential grow for values near [0, 100]
-      x /= 25;
-      return (-2 * Math.pow(Math.E, x)) / (Math.pow(Math.E, x) + 1) + 2;
+      const reducedX = x / 25;
+      return (-2 * Math.pow(Math.E, reducedX)) / (Math.pow(Math.E, reducedX) + 1) + 2;
     };
     const distance = getDistance(individual, this.target);
 
