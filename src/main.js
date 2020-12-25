@@ -16,6 +16,8 @@ const ALGORITHM = Object.freeze({
   mutationChance: 0.25
 });
 const TARGET_POINT = Object.freeze({ x: 125, y: 270 });
+const TARGET_POINT_COLOR = '#FF0000';
+const OFFSPRING_POINT_COLOR = '#000000';
 
 const CANVAS_WIDTH_PX = 400;
 const CANVAS_HEIGHT_PX = 400;
@@ -174,8 +176,10 @@ class Main {
 
   start() {
     this.ga.start((strongest, fit) => {
+      const offspringPoint = { x: strongest.x, y: strongest.y };
+
       this.updateCanvas();
-      this.drawPoint(strongest.x, strongest.y);
+      this.drawOffspringPoint(offspringPoint);
       this.fitDiv.innerHTML = fit + '%';
 
       // console.log(`Fit ${fit}`);
@@ -185,18 +189,22 @@ class Main {
 
   updateCanvas() {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-    this.drawPoint(TARGET_POINT.x, TARGET_POINT.y, true);
+    this.drawTargetPoint();
   }
 
-  drawPoint(x, y, red) {
-    y += 400 - 2 * y;
+  drawTargetPoint() {
+    this.drawPoint(TARGET_POINT, TARGET_POINT_COLOR);
+  }
 
-    if (red) {
-      this.ctx.fillStyle = '#FF0000';
-    }
-    else {
-      this.ctx.fillStyle = '#000000';
-    }
+  drawOffspringPoint(offspringPoint) {
+    this.drawPoint(offspringPoint, OFFSPRING_POINT_COLOR);
+  }
+
+  drawPoint(point, color) {
+    const x = point.x;
+    const y = point.y + CANVAS_HEIGHT_PX - 2 * point.y;
+
+    this.ctx.fillStyle = color;
     this.ctx.beginPath();
     this.ctx.arc(x, y, 8, 0, 2 * Math.PI);
     this.ctx.fill();
