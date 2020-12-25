@@ -180,10 +180,7 @@ class Main {
 
       this.updateCanvas();
       this.drawOffspringPoint(offspringPoint);
-      this.fitDiv.innerHTML = fit + '%';
-
-      // console.log(`Fit ${fit}`);
-      // console.log(strongest);
+      this.fitDiv.innerText = fit + '%';
     });
   }
 
