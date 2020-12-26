@@ -20,14 +20,25 @@ const ALGORITHM = Object.freeze({
 
 /**
  * Defines a Genetic Algorithm Individual which represents a two dimensional
- * mutable Point.
+ * immutable Point.
  *
  * @author Tobias Briones
  */
 export class Individual {
+  #x;
+  #y;
+
   constructor(x = 0, y = 0) {
-    this.x = x;
-    this.y = y;
+    this.#x = x;
+    this.#y = y;
+  }
+
+  get x() {
+    return this.#x;
+  }
+
+  get y() {
+    return this.#y;
   }
 }
 
@@ -110,13 +121,8 @@ export class GeneticAlgorithm {
   }
 
   #crossover() {
-    const offspring1 = newRandomIndividual();
-    offspring1.x = this.bestParent.x;
-    offspring1.y = this.secondBestParent.y;
-
-    const offspring2 = newRandomIndividual();
-    offspring2.x = this.secondBestParent.x;
-    offspring2.y = this.bestParent.y;
+    const offspring1 = getOffspringFrom(this.bestParent, this.secondBestParent);
+    const offspring2 = getOffspringFrom(this.secondBestParent, this.bestParent);
 
     // Kill one of them < jajaja >
     if (this.#getFitness(offspring1) < this.#getFitness(offspring2)) {
@@ -132,9 +138,9 @@ export class GeneticAlgorithm {
     if (Math.random() < this.mutationChance) {
       const mx = Math.random() / 50;
       const my = Math.random() / 50;
-
-      this.offspring.x += mx;
-      this.offspring.y += my;
+      const x = this.offspring.x + mx;
+      const y = this.offspring.y + my;
+      this.offspring = new Individual(x, y);
     }
   }
 
@@ -182,4 +188,8 @@ function newRandomIndividual() {
   const x = Math.random() * CANVAS_WIDTH_PX;
   const y = Math.random() * CANVAS_HEIGHT_PX;
   return new Individual(x, y);
+}
+
+function getOffspringFrom(p1, p2) {
+  return new Individual(p1.x, p2.y);
 }
