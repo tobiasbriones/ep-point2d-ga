@@ -12,6 +12,7 @@
 
 import { CANVAS_HEIGHT_PX, CANVAS_WIDTH_PX } from './main.mjs';
 
+const ALGORITHM_INTERVAL_DELAY_MS = 50;
 const ALGORITHM = Object.freeze({
   n: 10,
   threshold: 1000,
@@ -74,28 +75,36 @@ export class GeneticAlgorithm {
   }
 
   #runAlgorithm(callback) {
+    const onNextGenerationRun = () => callback(this.bestParent, this.bestFit);
+    const checkThreshold = (counter, intervalId) => {
+      if (counter >= this.threshold) {
+        clearInterval(intervalId);
+      }
+    };
     let counter = 0;
 
-    const interval = setInterval(() => {
-      this.#select();
-      this.#crossover();
-      this.#mutate();
+    const intervalId = setInterval(
+      () => {
+        this.#runNextGeneration();
+        onNextGenerationRun();
+        checkThreshold(counter, intervalId);
+        counter++;
+      },
+      ALGORITHM_INTERVAL_DELAY_MS
+    );
+  }
 
-      for (let i = 3; i < this.n; i++) {
-        this.population[i] = newRandomIndividual();
-      }
-      this.population[0] = this.bestParent;
-      this.population[1] = this.secondBestParent;
-      this.population[2] = this.offspring;
+  #runNextGeneration() {
+    this.#select();
+    this.#crossover();
+    this.#mutate();
 
-      // console.log(`New generation ready ${JSON.stringify(this.population)}`);
-      // console.log("------------------------------------------------------------")
-      callback(this.bestParent, this.bestFit);
-      if (counter >= this.threshold) {
-        clearInterval(interval);
-      }
-      counter++;
-    }, 50);
+    for (let i = 3; i < this.n; i++) {
+      this.population[i] = newRandomIndividual();
+    }
+    this.population[0] = this.bestParent;
+    this.population[1] = this.secondBestParent;
+    this.population[2] = this.offspring;
   }
 
   #select() {
