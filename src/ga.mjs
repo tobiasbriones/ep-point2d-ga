@@ -162,6 +162,64 @@ export class GeneticAlgorithm {
 }
 
 /**
+ * Creates a cluster of a given population when the individuals are categorized
+ * into elite and remaining. The elite cluster contains the best fitted
+ * individuals of the population.
+ */
+class PopulationCluster {
+  #n;
+  #elite;
+  #remaining;
+
+  constructor(n) {
+    this.#n = n;
+    this.#init();
+  }
+
+  get actualSize() {
+    return this.#elite.size + this.#remaining.size;
+  }
+
+  get elite() {
+    this.#validate();
+    return this.#elite;
+  }
+
+  get remaining() {
+    this.#validate();
+    return this.#remaining;
+  }
+
+  addToElite(individual) {
+    this.#elite.push(individual);
+  }
+
+  addToRemaining(individual) {
+    this.#remaining.push(individual);
+  }
+
+  clear() {
+    this.#init();
+  }
+
+  #init() {
+    this.#elite = [];
+    this.#remaining = [];
+  }
+
+  #validate() {
+    if (!this.#isFinished()) {
+      const msg = `Cluster not finished. n = ${ this.#n } but actual size = ${ this.actualSize }`;
+      throw new Error(msg);
+    }
+  }
+
+  #isFinished() {
+    return this.actualSize === this.#n;
+  }
+}
+
+/**
  * Computes the fitness value for the given individual with respect to the given
  * target point. The fitness value belongs to (0, 100) where the individual
  * fitness is better as it approaches 100.
