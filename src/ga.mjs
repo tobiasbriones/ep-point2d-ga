@@ -54,7 +54,7 @@ export class GeneticAlgorithm {
     this.population = [];
 
     for (let i = 0; i < this.n; i++) {
-      this.population.push(newIndividual());
+      this.population.push(newRandomIndividual());
     }
     // console.log(`Target ${JSON.stringify(this.target)}`);
     // console.log(`Initial population ${JSON.stringify(this.population)}`);
@@ -68,7 +68,7 @@ export class GeneticAlgorithm {
       this.#mutate();
 
       for (let i = 3; i < this.n; i++) {
-        this.population[i] = newIndividual();
+        this.population[i] = newRandomIndividual();
       }
       this.population[0] = this.bestParent;
       this.population[1] = this.secondBestParent;
@@ -91,7 +91,7 @@ export class GeneticAlgorithm {
     let second = this.population[0];
 
     this.population.forEach(individual => {
-      const fitness = this.#fitness(individual);
+      const fitness = this.#getFitness(individual);
 
       if (fitness > firstScore) {
         firstScore = fitness;
@@ -110,16 +110,16 @@ export class GeneticAlgorithm {
   }
 
   #crossover() {
-    const offspring1 = newIndividual();
+    const offspring1 = newRandomIndividual();
     offspring1.x = this.bestParent.x;
     offspring1.y = this.secondBestParent.y;
 
-    const offspring2 = newIndividual();
+    const offspring2 = newRandomIndividual();
     offspring2.x = this.secondBestParent.x;
     offspring2.y = this.bestParent.y;
 
     // Kill one of them < jajaja >
-    if (this.#fitness(offspring1) < this.#fitness(offspring2)) {
+    if (this.#getFitness(offspring1) < this.#getFitness(offspring2)) {
       this.offspring = offspring2;
     }
     else {
@@ -138,31 +138,35 @@ export class GeneticAlgorithm {
     }
   }
 
-  #fitness(individual) {
-    const evalModifiedSigmoid = x => {
-      // Slow down the exponential grow for values near [0, 100]
-      const reducedX = x / 25;
-      return (-2 * Math.pow(Math.E, reducedX)) / (Math.pow(Math.E, reducedX) + 1) + 2;
-    };
-    const distance = getDistance(individual, this.target);
-    const sigmoid = evalModifiedSigmoid(distance);
-
-    // 1.0 = distance zero, great
-    // near 0 = distance sucks
-
-    // If distance = 10, fitness is 80
-    // If distance = 50, fitness is 23
-    // If distance = 100, fitness is 3
-    return sigmoid * 100;
+  #getFitness(individual) {
+    return computeFitness(individual, this.target);
   }
 }
 
-function newIndividual() {
+export function computeFitness(individual, target) {
+  const evalModifiedSigmoid = x => {
+    // Slow down the exponential grow for values near [0, 100]
+    const reducedX = x / 25;
+    return (-2 * Math.pow(Math.E, reducedX)) / (Math.pow(Math.E, reducedX) + 1) + 2;
+  };
+  const distance = computeDistance(individual, target);
+  const sigmoid = evalModifiedSigmoid(distance);
+
+  // 1.0 = distance zero, great
+  // near 0 = distance sucks
+
+  // If distance = 10, fitness is 80
+  // If distance = 50, fitness is 23
+  // If distance = 100, fitness is 3
+  return sigmoid * 100;
+}
+
+export function computeDistance(p1, p2) {
+  return Math.sqrt(Math.pow(p1.x - p2.x, 2) + Math.pow(p1.y - p2.y, 2));
+}
+
+function newRandomIndividual() {
   const x = Math.random() * CANVAS_WIDTH_PX;
   const y = Math.random() * CANVAS_HEIGHT_PX;
   return new Individual(x, y);
-}
-
-function getDistance(p1, p2) {
-  return Math.sqrt(Math.pow(p1.x - p2.x, 2) + Math.pow(p1.y - p2.y, 2));
 }
