@@ -101,7 +101,7 @@ export class GeneticAlgorithm {
     let first = this.population[0];
     let second = this.population[0];
 
-    this.population.forEach(individual => {
+    for (const individual of this.population) {
       const fitness = this.#getFitness(individual);
 
       if (fitness > firstScore) {
@@ -112,7 +112,7 @@ export class GeneticAlgorithm {
         secondScore = fitness;
         second = individual;
       }
-    });
+    }
     this.bestParent = first;
     this.secondBestParent = second;
     this.bestFit = firstScore;
