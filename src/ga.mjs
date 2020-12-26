@@ -143,6 +143,22 @@ export class GeneticAlgorithm {
   }
 }
 
+/**
+ * Computes the fitness value for the given individual with respect to the given
+ * target point. The fitness value belongs to (0, 100) where the individual
+ * fitness is better as it approaches 100.
+ *
+ * For example:
+ *
+ * - fit 100: distance zero, great
+ *
+ * - fit near 0: distance sucks
+ *
+ * @param individual point to calculate the fitness value
+ * @param target reference point where the individual should get close to
+ *
+ * @returns {number} the fitness value in (0, 100)
+ */
 export function computeFitness(individual, target) {
   const evalModifiedSigmoid = x => {
     // Slow down the exponential grow for values near [0, 100]
@@ -151,9 +167,6 @@ export function computeFitness(individual, target) {
   };
   const distance = computeDistance(individual, target);
   const sigmoid = evalModifiedSigmoid(distance);
-
-  // 1.0 = distance zero, great
-  // near 0 = distance sucks
 
   // If distance = 10, fitness is 80
   // If distance = 50, fitness is 23
