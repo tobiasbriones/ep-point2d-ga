@@ -10,13 +10,15 @@
  * https://opensource.org/licenses/MIT.
  */
 
-import { GeneticAlgorithm } from './ga.mjs';
+import { GeneticAlgorithm, Individual } from './ga.mjs';
 
-const TARGET_POINT = Object.freeze({ x: 125, y: 270 });
-const TARGET_POINT_COLOR = '#FF0000';
-const OFFSPRING_POINT_COLOR = '#000000';
 export const CANVAS_WIDTH_PX = 400;
 export const CANVAS_HEIGHT_PX = 400;
+const TARGET_POINT_X = 125;
+const TARGET_POINT_Y = 270;
+const TARGET_POINT = new Individual(TARGET_POINT_X, TARGET_POINT_Y);
+const TARGET_POINT_COLOR = '#FF0000';
+const OFFSPRING_POINT_COLOR = '#000000';
 
 class Main {
   constructor() {
@@ -36,10 +38,8 @@ class Main {
 
   start() {
     this.ga.start((strongest, fit) => {
-      const offspringPoint = { x: strongest.x, y: strongest.y };
-
       this.updateCanvas();
-      this.drawOffspringPoint(offspringPoint);
+      this.drawOffspringPoint(strongest);
       this.fitDiv.innerText = fit + '%';
     });
   }
