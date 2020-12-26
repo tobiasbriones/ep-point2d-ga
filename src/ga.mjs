@@ -61,19 +61,22 @@ export class GeneticAlgorithm {
   }
 
   start(callback) {
-    // Init first population
+    this.#initPopulation();
+    this.#runAlgorithm(callback);
+  }
+
+  #initPopulation() {
     this.population = [];
 
     for (let i = 0; i < this.n; i++) {
       this.population.push(newRandomIndividual());
     }
-    // console.log(`Target ${JSON.stringify(this.target)}`);
-    // console.log(`Initial population ${JSON.stringify(this.population)}`);
+  }
 
-    // Start the algorithm
-    // Each iteration is a new generation
-    let k = 0;
-    const i = setInterval(() => {
+  #runAlgorithm(callback) {
+    let counter = 0;
+
+    const interval = setInterval(() => {
       this.#select();
       this.#crossover();
       this.#mutate();
@@ -88,10 +91,10 @@ export class GeneticAlgorithm {
       // console.log(`New generation ready ${JSON.stringify(this.population)}`);
       // console.log("------------------------------------------------------------")
       callback(this.bestParent, this.bestFit);
-      if (k >= this.threshold) {
-        clearInterval(i);
+      if (counter >= this.threshold) {
+        clearInterval(interval);
       }
-      k++;
+      counter++;
     }, 50);
   }
 
