@@ -49,7 +49,7 @@ export class GeneticAlgorithm {
     this.bestFit = -1;
   }
 
-  start = callback => {
+  start(callback) {
     // Init first population
     this.population = [];
 
@@ -82,9 +82,9 @@ export class GeneticAlgorithm {
       }
       k++;
     }, 50);
-  };
+  }
 
-  #select = () => {
+  #select() {
     let firstScore = 0;
     let secondScore = 0;
     let first = this.population[0];
@@ -107,9 +107,9 @@ export class GeneticAlgorithm {
     this.bestFit = firstScore;
 
     // console.log(`Selection ${JSON.stringify(this.bestParent)} and ${JSON.stringify(this.secondBestParent)}`);
-  };
+  }
 
-  #crossover = () => {
+  #crossover() {
     const offspring1 = newIndividual();
     offspring1.x = this.bestParent.x;
     offspring1.y = this.secondBestParent.y;
@@ -126,9 +126,9 @@ export class GeneticAlgorithm {
       this.offspring = offspring1;
     }
     // console.log(`Offspring ${JSON.stringify(this.offspring)}`);
-  };
+  }
 
-  #mutate = () => {
+  #mutate() {
     if (Math.random() < this.mutationChance) {
       const mx = Math.random() / 50;
       const my = Math.random() / 50;
@@ -136,20 +136,15 @@ export class GeneticAlgorithm {
       this.offspring.x += mx;
       this.offspring.y += my;
     }
-  };
+  }
 
-  #fitness = individual => {
-    const getDistance = (p1, p2) => {
-      return Math.sqrt(Math.pow(p1.x - p2.x, 2) + Math.pow(p1.y - p2.y, 2));
-    };
+  #fitness(individual) {
     const evalModifiedSigmoid = x => {
       // Slow down the exponential grow for values near [0, 100]
       const reducedX = x / 25;
       return (-2 * Math.pow(Math.E, reducedX)) / (Math.pow(Math.E, reducedX) + 1) + 2;
     };
     const distance = getDistance(individual, this.target);
-
-    // Eval sigmoid function
     const sigmoid = evalModifiedSigmoid(distance);
 
     // 1.0 = distance zero, great
@@ -159,11 +154,15 @@ export class GeneticAlgorithm {
     // If distance = 50, fitness is 23
     // If distance = 100, fitness is 3
     return sigmoid * 100;
-  };
+  }
 }
 
 function newIndividual() {
   const x = Math.random() * CANVAS_WIDTH_PX;
   const y = Math.random() * CANVAS_HEIGHT_PX;
   return new Individual(x, y);
+}
+
+function getDistance(p1, p2) {
+  return Math.sqrt(Math.pow(p1.x - p2.x, 2) + Math.pow(p1.y - p2.y, 2));
 }
