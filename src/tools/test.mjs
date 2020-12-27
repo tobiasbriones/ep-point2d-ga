@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019-2020 Tobias Briones. All rights reserved.
+ * Copyright (c) 2020 Tobias Briones. All rights reserved.
  *
  * SPDX-License-Identifier: MIT
  *
