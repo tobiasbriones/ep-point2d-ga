@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019-2020 Tobias Briones. All rights reserved.
+ * Copyright (c) 2020 Tobias Briones. All rights reserved.
  *
  * SPDX-License-Identifier: MIT
  *
@@ -10,7 +10,7 @@
  * https://opensource.org/licenses/MIT.
  */
 
-export const gaTest = { run };
+export const populationTest = { run };
 
 function run() {
   testPopulationCluster();
