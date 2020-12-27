@@ -10,6 +10,15 @@
  * https://opensource.org/licenses/MIT.
  */
 
+/**
+ * Returns a pseudo-random item from the given array, null if the array is
+ * empty.
+ *
+ * @param array array to take the random item
+ *
+ * @returns {*|null} a pseudo-random item from the given array, null if the
+ *                   array is empty
+ */
 export function getRandomItemFrom(array) {
   const length = array.length;
   const pos = Math.floor(Math.random() * length);
