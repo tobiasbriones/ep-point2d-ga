@@ -12,11 +12,16 @@
 
 import { CANVAS_HEIGHT_PX, CANVAS_WIDTH_PX } from './main.mjs';
 
-const ALGORITHM_INTERVAL_DELAY_MS = 50;
-const ALGORITHM = Object.freeze({
+export const DEF_CONFIG = Object.freeze({
   n: 10,
   threshold: 1000,
   mutationChance: 0.25
+});
+
+const IndividualClusterType = Object.freeze({
+  ELITE: 0,
+  GRACED: 1,
+  REMAINING: 2
 });
 
 /**
@@ -44,20 +49,18 @@ export class Individual {
 }
 
 /**
- * Defines the genetic algorithm to apply to the Point2D problem.
+ * Implements the genetic algorithm to apply to the Point2D problem.
  *
  * @author Tobias Briones
  */
 export class GeneticAlgorithm {
   constructor(target) {
     this.target = target;
-    this.n = ALGORITHM.n;
+    this.n = DEF_CONFIG.n;
     this.population = null;
-    this.threshold = ALGORITHM.threshold;
-    this.mutationChance = ALGORITHM.mutationChance;
+    this.threshold = DEF_CONFIG.threshold;
+    this.mutationChance = DEF_CONFIG.mutationChance;
     this.bestParent = null;
-    this.secondBestParent = null;
-    this.offspring = null;
     this.bestFit = -1;
   }
 
@@ -90,7 +93,7 @@ export class GeneticAlgorithm {
         checkThreshold(counter, intervalId);
         counter++;
       },
-      ALGORITHM_INTERVAL_DELAY_MS
+      Algorithm.intervalDelayMs
     );
   }
 
@@ -133,6 +136,10 @@ export class GeneticAlgorithm {
   }
 
   #crossover() {
+    function getOffspringFrom(p1, p2) {
+      return new Individual(p1.x, p2.y);
+    }
+
     const offspring1 = getOffspringFrom(this.bestParent, this.secondBestParent);
     const offspring2 = getOffspringFrom(this.secondBestParent, this.bestParent);
 
@@ -162,13 +169,63 @@ export class GeneticAlgorithm {
 }
 
 /**
+ * Defines internal algorithm constrains.
+ *
+ * @author Tobias Briones
+ */
+class Algorithm {
+  static #intervalDelayMs = 50;
+  static #eliteFitnessRangeMin = 80;
+  static #gracedFitnessInterval = 20;
+
+  static get intervalDelayMs() {
+    return this.#intervalDelayMs;
+  }
+
+  static get eliteFitnessRangeMin() {
+    return this.#eliteFitnessRangeMin;
+  }
+
+  static get gracedFitnessInterval() {
+    return this.#gracedFitnessInterval;
+  }
+
+  static get gracedFitnessRangeMin() {
+    return Algorithm.eliteFitnessRangeMin - Algorithm.gracedFitnessInterval;
+  }
+}
+
+/**
  * Creates a cluster of a given population when the individuals are categorized
- * into elite and remaining. The elite cluster contains the best fitted
- * individuals of the population.
+ * into elite and remaining with/without grace. The elite cluster contains the
+ * best fitted individuals of the population. The remaining with grace might
+ * make it to the next generation. The remaining without grace won't make it to
+ * the next generation.
+ *
+ * @author Tobias Briones
  */
 class PopulationCluster {
+  static #getIndividualTypeByFitnessValue(fitnessValue) {
+    let type;
+
+    const isElite = () => fitnessValue >= Algorithm.ELITE_FITNESS_RANGE_MIN;
+    const hasGrace = () => fitnessValue >= Algorithm.GRACED_FITNESS_RANGE_MIN;
+
+    if (isElite()) {
+      type = IndividualClusterType.ELITE;
+    }
+    else if (hasGrace()) {
+      type = IndividualClusterType.GRACED;
+    }
+    else {
+      type = IndividualClusterType.REMAINING;
+    }
+    return type;
+  }
+
   #n;
   #elite;
+  #graced;
   #remaining;
 
   constructor(n) {
@@ -176,26 +233,65 @@ class PopulationCluster {
     this.#init();
   }
 
-  get actualSize() {
-    return this.#elite.size + this.#remaining.size;
+  get length() {
+    return this.#elite.length + this.#graced.length + this.#remaining.length;
   }
 
-  get elite() {
+  get randomEliteIndividual() {
+    return getRandomItemFrom(this.#elite);
+  }
+
+  get randomGracedIndividual() {
+    return getRandomItemFrom(this.#graced);
+  }
+
+  get randomRemainingIndividual() {
+    return getRandomItemFrom(this.#remaining);
+  }
+
+  map(fn) {
     this.#validate();
-    return this.#elite;
+    const eliteMap = this.#elite.map(record => fn.eliteFn(
+      record.individual,
+      record.fitnessValue
+    ));
+    const gracedMap = this.#graced.map(record => fn.gracedFn(
+      record.individual,
+      record.fitnessValue
+    ));
+    const remainingMap = this.#remaining.map(record => fn.remainingFn(
+      record.individual,
+      record.fitnessValue
+    ));
+    return [...eliteMap, ...gracedMap, ...remainingMap];
   }
 
-  get remaining() {
-    this.#validate();
-    return this.#remaining;
-  }
+  addAll(population, fitnessFn) {
+    const newRecord = (individual, fitnessValue) => {
+      return {
+        individual: individual,
+        fitnessValue: fitnessValue
+      };
+    };
 
-  addToElite(individual) {
-    this.#elite.push(individual);
-  }
+    population.forEach(individual => {
+      const fitnessValue = fitnessFn.getFitnessOf(individual);
+      const type = PopulationCluster.#getIndividualTypeByFitnessValue(fitnessValue);
 
-  addToRemaining(individual) {
-    this.#remaining.push(individual);
+      switch (type) {
+        case IndividualClusterType.ELITE:
+          this.#elite.push(newRecord(individual));
+          break;
+
+        case IndividualClusterType.GRACED:
+          this.#graced.push(newRecord(individual));
+          break;
+
+        case IndividualClusterType.REMAINING:
+          this.#remaining.push(newRecord(individual));
+          break;
+      }
+    });
   }
 
   clear() {
@@ -204,18 +300,19 @@ class PopulationCluster {
 
   #init() {
     this.#elite = [];
+    this.#graced = [];
     this.#remaining = [];
   }
 
   #validate() {
     if (!this.#isFinished()) {
-      const msg = `Cluster not finished. n = ${ this.#n } but actual size = ${ this.actualSize }`;
+      const msg = `Cluster not finished. n = ${ this.#n } but actual size = ${ this.length }`;
       throw new Error(msg);
     }
   }
 
   #isFinished() {
-    return this.actualSize === this.#n;
+    return this.length === this.#n;
   }
 }
 
@@ -260,6 +357,12 @@ function newRandomIndividual() {
   return new Individual(x, y);
 }
 
-function getOffspringFrom(p1, p2) {
+function createOffspringFrom(p1, p2) {
   return new Individual(p1.x, p2.y);
+}
+
+function getRandomItemFrom(array) {
+  const length = array.length;
+  const pos = Math.floor(Math.random() * length);
+  return length > 0 ? array[pos] : null;
 }
