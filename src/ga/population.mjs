@@ -33,15 +33,22 @@ export class PopulationCluster {
   #elite;
   #graced;
   #remaining;
+  #hasToSort;
 
   constructor(n) {
     this.#n = n;
     this.#selector = new Selector();
+    this.#hasToSort = true;
+
     this.#init();
   }
 
   set selector(value) {
     this.#selector = value;
+  }
+
+  set hasToSort(value) {
+    this.#hasToSort = value;
   }
 
   get length() {
@@ -88,6 +95,7 @@ export class PopulationCluster {
     };
 
     population.forEach(it => consume(it));
+    this.#sort();
   }
 
   map(fn) {
@@ -127,6 +135,27 @@ export class PopulationCluster {
 
   #isFinished() {
     return this.length === this.#n;
+  }
+
+  #sort() {
+    const comparator = (a, b) => {
+      let value;
+
+      if (a < b) {
+        value = -1;
+      }
+      else if (b > a) {
+        value = 1;
+      }
+      else {
+        value = 0;
+      }
+      return value;
+    };
+
+    this.#elite.sort(comparator);
+    this.#graced.sort(comparator);
+    this.#remaining.sort(comparator);
   }
 }
 
