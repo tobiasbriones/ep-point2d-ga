@@ -45,23 +45,23 @@ function testPopulationCluster() {
 
     cluster.selector = buildSelector();
 
-    it('Adds the population', () => {
+    it('adds the population', () => {
       cluster.addAll(POPULATION);
       assert(JSON.stringify(cluster.map(handler)) === JSON.stringify(POPULATION));
     });
 
-    it('Clears', () => {
+    it('clears', () => {
       cluster.clear();
       assert(cluster.length === 0);
     });
 
-    it('Does not allow unfinished map', () => {
+    it('does not allow unfinished map', () => {
       cluster.clear();
       cluster.addAll([POPULATION[0]]);
       expectToThrowError(() => cluster.map(handler));
     });
 
-    it('Selects', () => {
+    it('selects', () => {
       cluster.clear();
       cluster.addAll(POPULATION);
       cluster.map({
