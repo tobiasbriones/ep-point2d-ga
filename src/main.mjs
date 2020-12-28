@@ -10,7 +10,9 @@
  * https://opensource.org/licenses/MIT.
  */
 
-import { GeneticAlgorithm, Individual } from './ga.mjs';
+
+import { Individual } from './ga/population.mjs';
+import { GeneticAlgorithm } from './ga/point2d-ga.mjs';
 
 export const CANVAS_WIDTH_PX = 400;
 export const CANVAS_HEIGHT_PX = 400;
