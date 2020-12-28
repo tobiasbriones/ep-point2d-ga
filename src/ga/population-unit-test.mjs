@@ -10,10 +10,25 @@
  * https://opensource.org/licenses/MIT.
  */
 
-import { assert, it } from '../tools/test.mjs';
-import { computeDistance, Individual, IndividualClusterType, Selector } from './population.mjs';
+import { assert, expectToThrowError, it } from '../tools/test.mjs';
+import {
+  computeDistance,
+  Individual,
+  IndividualClusterType,
+  PopulationCluster,
+  Selector
+} from './population.mjs';
 
 const ZERO_DISTANCE = 0;
+const MIN_FIT_TO_BE_ELITE_MOCK = 80;
+const GOOD_ELITE_FIT_MOCK = 90;
+const MIN_FIT_TO_BE_GRACE_MOCK = 50;
+const GOOD_GRACED_FIT_MOCK = 60;
+const POPULATION = [
+  new Individual(0, 0),
+  new Individual(-2, -2),
+  new Individual(2, 2)
+];
 
 export const populationTest = { run };
 
@@ -24,7 +39,87 @@ function run() {
 }
 
 function testPopulationCluster() {
+  return (() => {
+    const cluster = new PopulationCluster(POPULATION.length);
+    const handler = getHandler();
 
+    cluster.selector = buildSelector();
+
+    it('Adds the population', () => {
+      cluster.addAll(POPULATION);
+      assert(JSON.stringify(cluster.map(handler)) === JSON.stringify(POPULATION));
+    });
+
+    it('Clears', () => {
+      cluster.clear();
+      assert(cluster.length === 0);
+    });
+
+    it('Does not allow unfinished map', () => {
+      cluster.clear();
+      cluster.addAll([POPULATION[0]]);
+      expectToThrowError(() => cluster.map(handler));
+    });
+
+    it('Selects', () => {
+      cluster.clear();
+      cluster.addAll(POPULATION);
+      cluster.map({
+        eliteFn(individual) {
+          assert(individual === POPULATION[0]);
+          return individual;
+        },
+        gracedFn(individual) {
+          assert(individual === POPULATION[1]);
+          return individual;
+        },
+        remainingFn(individual) {
+          assert(individual === POPULATION[2]);
+          return individual;
+        }
+      });
+    });
+  })();
+
+  function getHandler() {
+    return {
+      eliteFn(individual) {
+        return individual;
+      },
+      gracedFn(individual) {
+        return individual;
+      },
+      remainingFn(individual) {
+        return individual;
+      }
+    };
+  }
+
+  function buildSelector() {
+    const selector = new Selector();
+
+    selector.fitnessFn = individual => {
+      let fit = 0;
+
+      if (individual === POPULATION[0]) {
+        fit = GOOD_ELITE_FIT_MOCK;
+      }
+      else if (individual === POPULATION[1]) {
+        fit = GOOD_GRACED_FIT_MOCK;
+      }
+      return fit;
+    };
+
+    selector.isEliteFn = (individual, fit) => {
+      return fit >= MIN_FIT_TO_BE_ELITE_MOCK;
+    };
+
+    selector.isGracedFn = (individual, fit) => {
+      return fit >= MIN_FIT_TO_BE_GRACE_MOCK;
+    };
+
+    return selector;
+  }
 }
 
 function testSelector() {
