@@ -11,7 +11,7 @@
  */
 
 import { assert, it } from '../tools/test.mjs';
-import { computeDistance, Individual } from './population.mjs';
+import { computeDistance, Individual, IndividualClusterType, Selector } from './population.mjs';
 
 const ZERO_DISTANCE = 0;
 
@@ -19,11 +19,88 @@ export const populationTest = { run };
 
 function run() {
   testPopulationCluster();
+  testSelector();
   testFunctions();
 }
 
 function testPopulationCluster() {
 
+}
+
+function testSelector() {
+  const selector = new Selector();
+  const individualMock = new Individual();
+  const minFitToBeEliteMock = 80;
+  const maxFitToBeEliteMock = 100;
+  const minFitToBeGracedMock = 50;
+  const eliteFn = fit => fit >= minFitToBeEliteMock;
+  const graceFn = fit => !eliteFn(fit) && fit >= minFitToBeGracedMock;
+  const check = (selection, type, fit) => selection.type === type && selection.fitnessValue === fit;
+
+  selector.isEliteFn = (individual, fitnessValue) => eliteFn(fitnessValue);
+  selector.isGracedFn = (individual, fitnessValue) => graceFn(fitnessValue);
+
+  it('checks is selected as elite', () => {
+    selector.fitnessFn = () => minFitToBeEliteMock;
+
+    assert(check(
+      selector.select(individualMock),
+      IndividualClusterType.ELITE,
+      minFitToBeEliteMock
+    ));
+
+    selector.fitnessFn = () => maxFitToBeEliteMock;
+
+    assert(check(
+      selector.select(individualMock),
+      IndividualClusterType.ELITE,
+      maxFitToBeEliteMock
+    ));
+
+    selector.fitnessFn = () => (maxFitToBeEliteMock + minFitToBeEliteMock) / 2;
+
+    assert(check(
+      selector.select(individualMock),
+      IndividualClusterType.ELITE,
+      (maxFitToBeEliteMock + minFitToBeEliteMock) / 2
+    ));
+  });
+
+  it('checks is selected as graced', () => {
+    selector.fitnessFn = () => minFitToBeGracedMock;
+
+    assert(check(
+      selector.select(individualMock),
+      IndividualClusterType.GRACED,
+      minFitToBeGracedMock
+    ));
+
+    selector.fitnessFn = () => (minFitToBeGracedMock + minFitToBeEliteMock) / 2;
+
+    assert(check(
+      selector.select(individualMock),
+      IndividualClusterType.GRACED,
+      (minFitToBeGracedMock + minFitToBeEliteMock) / 2
+    ));
+  });
+
+  it('checks is selected as remaining', () => {
+    selector.fitnessFn = () => 0;
+
+    assert(check(
+      selector.select(individualMock),
+      IndividualClusterType.REMAINING,
+      0
+    ));
+
+    selector.fitnessFn = () => minFitToBeGracedMock / 2;
+
+    assert(check(
+      selector.select(individualMock),
+      IndividualClusterType.REMAINING,
+      minFitToBeGracedMock / 2
+    ));
+  });
 }
 
 function testFunctions() {

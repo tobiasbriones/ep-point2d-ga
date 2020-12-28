@@ -192,8 +192,8 @@ export class Individual {
 export class Selector {
   constructor() {
     this.fitnessFn = () => 0;
-    this.isEliteFn = () => false;
-    this.isGracedFn = () => false;
+    this.isEliteFn = (_individual, _fitnessValue) => false;
+    this.isGracedFn = (_individual, _fitnessValue) => false;
   }
 
   select(individual) {
