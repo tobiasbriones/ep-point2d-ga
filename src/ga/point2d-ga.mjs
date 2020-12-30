@@ -259,16 +259,23 @@ class OffspringStrategy {
   }
 
   static createAndApproachElite(p1, p2, elite) {
-    const mid = computeMiddlePoint(p1, p2);
-    return computeMiddlePoint(mid, elite);
+    const mid = OffspringStrategy.#computeMiddlePoint(p1, p2);
+    return OffspringStrategy.#computeMiddlePoint(mid, elite);
   }
 
   static createByMiddlePointFrom(p1, p2) {
-    return computeMiddlePoint(p1, p2);
+    return OffspringStrategy.#computeMiddlePoint(p1, p2);
   }
 
   static createFromOverfittedElite(elite, mate) {
     return OffspringStrategy.createByMiddlePointFrom(elite, mate);
+  }
+
+  static #computeMiddlePoint(p1, p2) {
+    return new Individual(
+      (p1.x + p2.x) / 2,
+      (p1.y + p2.y) / 2
+    );
   }
 }
 
@@ -307,13 +314,6 @@ function newRandomIndividual() {
   const x = Math.random() * CANVAS_WIDTH_PX;
   const y = Math.random() * CANVAS_HEIGHT_PX;
   return new Individual(x, y);
-}
-
-function computeMiddlePoint(p1, p2) {
-  return new Individual(
-    (p1.x + p2.x) / 2,
-    (p1.y + p2.y) / 2
-  );
 }
 
 function rotate(point, angle) {
