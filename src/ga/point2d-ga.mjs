@@ -222,6 +222,11 @@ class Algorithm {
   }
 }
 
+/**
+ * Defines functions used to create the offspring according to its parents.
+ *
+ * @author Tobias Briones
+ */
 class OffspringStrategy {
   static createFromElite(current, top, distance) {
     const { individual, fit } = current;
