@@ -119,20 +119,20 @@ export class GeneticAlgorithm {
         const distance = computeDistance(individual, previousBest);
 
         if (distance > 0) {
-          return createOffspringFromElite(
+          return OffspringStrategy.createFromElite(
             { individual, fit },
             { previousBest, previousBestFit },
             distance
           );
         }
         const mate = randomIndividualAsc(cluster, individual);
-        return createOffspringFromOverfittedElite(individual, mate);
+        return OffspringStrategy.createFromOverfittedElite(individual, mate);
       },
 
       gracedFn(individual) {
         const mate = randomIndividualDes(cluster);
         const elite = randomEliteIndividual(cluster, newRandomIndividual());
-        return createOffspringAndApproachElite(individual, mate, elite);
+        return OffspringStrategy.createAndApproachElite(individual, mate, elite);
       },
       remainingFn(individual, fit) {
         if (fit < 1) {
@@ -140,17 +140,15 @@ export class GeneticAlgorithm {
         }
         if (Math.random() < 0.2) {
           const mate = randomIndividualAsc(cluster);
-          return createOffspringByMiddlePointFrom(individual, mate);
+          return OffspringStrategy.createByMiddlePointFrom(individual, mate);
         }
         const mate1 = randomIndividualAsc(cluster);
         const mate2 = randomIndividualAsc(cluster);
         const elite = randomEliteIndividual(cluster, randomIndividualDes(cluster));
 
-        return createOffspringAndApproachElite(mate1, mate2, elite);
+        return OffspringStrategy.createAndApproachElite(mate1, mate2, elite);
       }
     });
-    //console.log(this.population);
-    // console.log('\n');
   }
 
   #mutate() {
@@ -162,9 +160,6 @@ export class GeneticAlgorithm {
         const my = (Math.random() / 50) * sign2;
         const x = individual.x + mx;
         const y = individual.y + my;
-        // console.log(individual);
-        // console.log(new Individual(x, y));
-        // console.log();
         return new Individual(x, y);
       }
       return individual;
@@ -185,10 +180,6 @@ export class GeneticAlgorithm {
     }
     this.bestParent = selected;
     this.bestFit = score;
-    //
-    // console.log(this.bestParent);
-    // console.log(this.bestFit);
-    // console.log();
   }
 
   #buildSelector() {
@@ -231,6 +222,36 @@ class Algorithm {
   }
 }
 
+class OffspringStrategy {
+  static createFromElite(current, top, distance) {
+    const { individual, fit } = current;
+    const { previousBest, previousBestFit } = top;
+    const radius = 100 - previousBestFit;
+    const diff = previousBestFit - fit;
+    const dr = radius * (distance / diff);
+    const dz = distance - dr + (Math.random() * dr * randomSign());
+    const dy = (previousBest.y - individual.y) * dz / distance;
+    const dx = (previousBest.x - individual.x) * dz / distance;
+    const res = new Individual(individual.x + dx, individual.y + dy);
+    const angle = Math.random() * Math.PI / 4 * randomSign();
+    return rotate(res, angle);
+  }
+
+  static createAndApproachElite(p1, p2, elite) {
+    const mid = computeMiddlePoint(p1, p2, (Math.random() + 0.5) * 1.5);
+
+    return computeMiddlePoint(mid, elite);
+  }
+
+  static createByMiddlePointFrom(p1, p2) {
+    return computeMiddlePoint(p1, p2);
+  }
+
+  static createFromOverfittedElite(elite, mate) {
+    return OffspringStrategy.createByMiddlePointFrom(elite, mate);
+  }
+}
+
 /**
  * Computes the fitness value for the given individual with respect to the given
  * target point. The fitness value belongs to (0, 100) where the individual
@@ -266,34 +287,6 @@ function newRandomIndividual() {
   const x = Math.random() * CANVAS_WIDTH_PX;
   const y = Math.random() * CANVAS_HEIGHT_PX;
   return new Individual(x, y);
-}
-
-function createOffspringFromElite(current, top, distance) {
-  const { individual, fit } = current;
-  const { previousBest, previousBestFit } = top;
-  const radius = 100 - previousBestFit;
-  const diff = previousBestFit - fit;
-  const dr = radius * (distance / diff);
-  const dz = distance - dr + (Math.random() * dr * randomSign());
-  const dy = (previousBest.y - individual.y) * dz / distance;
-  const dx = (previousBest.x - individual.x) * dz / distance;
-  const res = new Individual(individual.x + dx, individual.y + dy);
-  const angle = Math.random() * Math.PI / 4 * randomSign();
-  return rotate(res, angle);
-}
-
-function createOffspringAndApproachElite(p1, p2, elite) {
-  const mid = computeMiddlePoint(p1, p2, (Math.random() + 0.5) * 1.5);
-
-  return computeMiddlePoint(mid, elite);
-}
-
-function createOffspringByMiddlePointFrom(p1, p2) {
-  return computeMiddlePoint(p1, p2);
-}
-
-function createOffspringFromOverfittedElite(elite, mate) {
-  return createOffspringByMiddlePointFrom(elite, mate);
 }
 
 function computeMiddlePoint(p1, p2, factor = 2) {
