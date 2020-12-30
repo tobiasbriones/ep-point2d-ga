@@ -14,9 +14,9 @@ import { CANVAS_HEIGHT_PX, CANVAS_WIDTH_PX } from '../main.mjs';
 import { computeDistance, Individual, PopulationCluster, Selector } from './population.mjs';
 
 export const DEF_CONFIG = Object.freeze({
-  n: 10,
+  n: 15,
   threshold: 10000,
-  mutationChance: 0.25
+  mutationChance: 0.05
 });
 
 /**
@@ -56,7 +56,6 @@ export class GeneticAlgorithm {
     const onNextGenerationRun = () => callback(this.bestParent, this.bestFit);
     const checkThreshold = (counter, intervalId) => {
       if (counter >= this.threshold) {
-        console.log('FINISH');
         clearInterval(intervalId);
       }
     };
@@ -135,10 +134,10 @@ export class GeneticAlgorithm {
         return OffspringStrategy.createAndApproachElite(individual, mate, elite);
       },
       remainingFn(individual, fit) {
-        if (fit < 1) {
+        if (fit <= Algorithm.maxFitToSubstituteRemaining) {
           return newRandomIndividual();
         }
-        if (Math.random() < 0.2) {
+        if (Math.random() <= Algorithm.remainingLuckChance) {
           const mate = randomIndividualAsc(cluster);
           return OffspringStrategy.createByMiddlePointFrom(individual, mate);
         }
@@ -152,18 +151,20 @@ export class GeneticAlgorithm {
   }
 
   #mutate() {
-    this.population.map(individual => {
-      if (Math.random() <= this.mutationChance) {
-        const sign1 = Math.random() < 0.5 ? -1 : 1;
-        const sign2 = Math.random() < 0.5 ? -1 : 1;
-        const mx = (Math.random() / 50) * sign1;
-        const my = (Math.random() / 50) * sign2;
-        const x = individual.x + mx;
-        const y = individual.y + my;
-        return new Individual(x, y);
-      }
-      return individual;
-    });
+    const hasMutationChance = () => Math.random() <= this.mutationChance;
+    const getRandomMutation = () => (Math.random() * Algorithm.maxAbsMutation) * randomSign();
+    const hasToMutate = individual => individual !== this.bestParent && hasMutationChance();
+    const applyMutation = individual => {
+      const mx = getRandomMutation();
+      const my = getRandomMutation();
+      const x = individual.x + mx;
+      const y = individual.y + my;
+      return new Individual(x, y);
+    };
+
+    this.population = this.population.map(
+      individual => hasToMutate(individual) ? applyMutation(individual) : individual
+    );
   }
 
   #setBestIndividual() {
@@ -204,6 +205,9 @@ class Algorithm {
   static #intervalDelayMs = 50;
   static #eliteFitnessRangeMin = 80;
   static #gracedFitnessInterval = 20;
+  static #maxAbsMutation = 0.02;
+  static #maxFitToSubstituteRemaining = 1;
+  static #remainingLuckChance = 0.2;
 
   static get intervalDelayMs() {
     return this.#intervalDelayMs;
@@ -219,6 +223,18 @@ class Algorithm {
 
   static get gracedFitnessRangeMin() {
     return Algorithm.eliteFitnessRangeMin - Algorithm.gracedFitnessInterval;
+  }
+
+  static get maxAbsMutation() {
+    return this.#maxAbsMutation;
+  }
+
+  static get maxFitToSubstituteRemaining() {
+    return this.#maxFitToSubstituteRemaining;
+  }
+
+  static get remainingLuckChance() {
+    return this.#remainingLuckChance;
   }
 }
 
@@ -309,5 +325,5 @@ function rotate(point, angle) {
 }
 
 function randomSign() {
-  return Math.random() - 0.5 < 0;
+  return Math.random() - (1 / 2) < 0;
 }
