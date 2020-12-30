@@ -152,7 +152,7 @@ export class GeneticAlgorithm {
 
   #mutate() {
     const hasMutationChance = () => Math.random() <= this.mutationChance;
-    const getRandomMutation = () => (Math.random() * Algorithm.maxAbsMutation) * randomSign();
+    const getRandomMutation = () => (Math.random() * Algorithm.maxAbsMutation) * getRandomSign();
     const hasToMutate = individual => individual !== this.bestParent && hasMutationChance();
     const applyMutation = individual => {
       const mx = getRandomMutation();
@@ -250,17 +250,16 @@ class OffspringStrategy {
     const radius = 100 - previousBestFit;
     const diff = previousBestFit - fit;
     const dr = radius * (distance / diff);
-    const dz = distance - dr + (Math.random() * dr * randomSign());
+    const dz = distance - dr + (Math.random() * dr * getRandomSign());
     const dy = (previousBest.y - individual.y) * dz / distance;
     const dx = (previousBest.x - individual.x) * dz / distance;
     const res = new Individual(individual.x + dx, individual.y + dy);
-    const angle = Math.random() * Math.PI / 4 * randomSign();
+    const angle = Math.random() * (Math.PI / 4) * getRandomSign();
     return rotate(res, angle);
   }
 
   static createAndApproachElite(p1, p2, elite) {
-    const mid = computeMiddlePoint(p1, p2, (Math.random() + 0.5) * 1.5);
-
+    const mid = computeMiddlePoint(p1, p2);
     return computeMiddlePoint(mid, elite);
   }
 
@@ -310,10 +309,10 @@ function newRandomIndividual() {
   return new Individual(x, y);
 }
 
-function computeMiddlePoint(p1, p2, factor = 2) {
+function computeMiddlePoint(p1, p2) {
   return new Individual(
-    (p1.x + p2.x) / factor,
-    (p1.y + p2.y) / factor
+    (p1.x + p2.x) / 2,
+    (p1.y + p2.y) / 2
   );
 }
 
@@ -324,6 +323,6 @@ function rotate(point, angle) {
   );
 }
 
-function randomSign() {
+function getRandomSign() {
   return Math.random() - (1 / 2) < 0;
 }
