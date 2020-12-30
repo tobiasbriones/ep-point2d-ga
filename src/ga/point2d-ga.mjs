@@ -210,15 +210,15 @@ class Algorithm {
   static #remainingLuckChance = 0.2;
 
   static get intervalDelayMs() {
-    return this.#intervalDelayMs;
+    return Algorithm.#intervalDelayMs;
   }
 
   static get eliteFitnessRangeMin() {
-    return this.#eliteFitnessRangeMin;
+    return Algorithm.#eliteFitnessRangeMin;
   }
 
   static get gracedFitnessInterval() {
-    return this.#gracedFitnessInterval;
+    return Algorithm.#gracedFitnessInterval;
   }
 
   static get gracedFitnessRangeMin() {
@@ -226,15 +226,15 @@ class Algorithm {
   }
 
   static get maxAbsMutation() {
-    return this.#maxAbsMutation;
+    return Algorithm.#maxAbsMutation;
   }
 
   static get maxFitToSubstituteRemaining() {
-    return this.#maxFitToSubstituteRemaining;
+    return Algorithm.#maxFitToSubstituteRemaining;
   }
 
   static get remainingLuckChance() {
-    return this.#remainingLuckChance;
+    return Algorithm.#remainingLuckChance;
   }
 }
 
