@@ -255,7 +255,7 @@ class OffspringStrategy {
     const dx = (previousBest.x - individual.x) * dz / distance;
     const res = new Individual(individual.x + dx, individual.y + dy);
     const angle = Math.random() * (Math.PI / 4) * getRandomSign();
-    return rotate(res, angle);
+    return OffspringStrategy.#rotate(res, angle);
   }
 
   static createAndApproachElite(p1, p2, elite) {
@@ -275,6 +275,13 @@ class OffspringStrategy {
     return new Individual(
       (p1.x + p2.x) / 2,
       (p1.y + p2.y) / 2
+    );
+  }
+
+  static #rotate(point, angle) {
+    return new Individual(
+      point.x * Math.cos(angle) - point.y * Math.sin(angle),
+      point.y * Math.cos(angle) + point.x * Math.sin(angle)
     );
   }
 }
@@ -314,13 +321,6 @@ function newRandomIndividual() {
   const x = Math.random() * CANVAS_WIDTH_PX;
   const y = Math.random() * CANVAS_HEIGHT_PX;
   return new Individual(x, y);
-}
-
-function rotate(point, angle) {
-  return new Individual(
-    point.x * Math.cos(angle) - point.y * Math.sin(angle),
-    point.y * Math.cos(angle) + point.x * Math.sin(angle)
-  );
 }
 
 function getRandomSign() {
