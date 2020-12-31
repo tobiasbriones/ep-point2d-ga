@@ -101,6 +101,12 @@ export function computeFitness(individual, target) {
   return sigmoid * 100;
 }
 
+export function newRandomIndividual() {
+  const x = Math.random() * CANVAS_WIDTH_PX;
+  const y = Math.random() * CANVAS_HEIGHT_PX;
+  return new Individual(x, y);
+}
+
 // ------------------------------------------  SCRIPT  ------------------------------------------ //
 
 document.addEventListener('DOMContentLoaded', () => {

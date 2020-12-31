@@ -10,7 +10,7 @@
  * https://opensource.org/licenses/MIT.
  */
 
-import { CANVAS_HEIGHT_PX, CANVAS_WIDTH_PX, computeFitness } from '../main.mjs';
+import { computeFitness, newRandomIndividual } from '../main.mjs';
 import { computeDistance, Individual, PopulationCluster, Selector } from './population.mjs';
 
 export const DEF_CONFIG = Object.freeze({
@@ -284,12 +284,6 @@ class OffspringStrategy {
       point.y * Math.cos(angle) + point.x * Math.sin(angle)
     );
   }
-}
-
-function newRandomIndividual() {
-  const x = Math.random() * CANVAS_WIDTH_PX;
-  const y = Math.random() * CANVAS_HEIGHT_PX;
-  return new Individual(x, y);
 }
 
 function getRandomSign() {
