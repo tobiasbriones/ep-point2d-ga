@@ -19,18 +19,17 @@ import {
   Selector
 } from './population.mjs';
 
+export const populationTest = { run };
 const ZERO_DISTANCE = 0;
 const MIN_FIT_TO_BE_ELITE_MOCK = 80;
 const GOOD_ELITE_FIT_MOCK = 90;
 const MIN_FIT_TO_BE_GRACE_MOCK = 50;
 const GOOD_GRACED_FIT_MOCK = 60;
-const POPULATION = [
+const POPULATION = Object.freeze([
   new Individual(0, 0),
   new Individual(-2, -2),
   new Individual(2, 2)
-];
-
-export const populationTest = { run };
+]);
 
 function run() {
   testPopulationCluster();
