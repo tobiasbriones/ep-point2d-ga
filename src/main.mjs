@@ -24,10 +24,27 @@ const OFFSPRING_POINT_COLOR = '#000000';
 
 class Main {
   constructor() {
-    this.ga = new GeneticAlgorithm(TARGET_POINT);
+    this.target = TARGET_POINT;
+    this.ga = new GeneticAlgorithm(this.target);
     this.fitDiv = null;
     this.canvas = null;
     this.ctx = null;
+  }
+
+  getFitness(individual) {
+    return computeFitness(individual, this.target)
+  }
+
+  onNextGen(strongest, fit) {
+    this.updateCanvas();
+    this.drawOffspringPoint(strongest);
+    this.fitDiv.innerText = fit + '%';
+  }
+
+  newRandomIndividual() {
+    const x = Math.random() * CANVAS_WIDTH_PX;
+    const y = Math.random() * CANVAS_HEIGHT_PX;
+    return new Individual(x, y);
   }
 
   init() {
@@ -35,15 +52,12 @@ class Main {
     this.canvas = document.getElementById('grid');
     this.ctx = this.canvas.getContext('2d');
 
+    this.ga.callback = this;
     this.start();
   }
 
   start() {
-    this.ga.start((strongest, fit) => {
-      this.updateCanvas();
-      this.drawOffspringPoint(strongest);
-      this.fitDiv.innerText = fit + '%';
-    });
+    this.ga.start();
   }
 
   updateCanvas() {
@@ -52,7 +66,7 @@ class Main {
   }
 
   drawTargetPoint() {
-    this.drawPoint(TARGET_POINT, TARGET_POINT_COLOR);
+    this.drawPoint(this.target, TARGET_POINT_COLOR);
   }
 
   drawOffspringPoint(offspringPoint) {
@@ -99,12 +113,6 @@ export function computeFitness(individual, target) {
   // If distance = 50, fitness is 23
   // If distance = 100, fitness is 3
   return sigmoid * 100;
-}
-
-export function newRandomIndividual() {
-  const x = Math.random() * CANVAS_WIDTH_PX;
-  const y = Math.random() * CANVAS_HEIGHT_PX;
-  return new Individual(x, y);
 }
 
 // ------------------------------------------  SCRIPT  ------------------------------------------ //

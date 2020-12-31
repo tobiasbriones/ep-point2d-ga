@@ -10,7 +10,6 @@
  * https://opensource.org/licenses/MIT.
  */
 
-import { computeFitness, newRandomIndividual } from '../main.mjs';
 import { computeDistance, Individual, PopulationCluster, Selector } from './population.mjs';
 
 export const DEF_CONFIG = Object.freeze({
@@ -27,8 +26,8 @@ export const DEF_CONFIG = Object.freeze({
 export class GeneticAlgorithm {
   #cluster;
 
-  constructor(target) {
-    this.target = target;
+  constructor() {
+    this.callback = null;
     this.n = DEF_CONFIG.n;
     this.population = null;
     this.threshold = DEF_CONFIG.threshold;
@@ -39,21 +38,25 @@ export class GeneticAlgorithm {
     this.#cluster.selector = this.#buildSelector();
   }
 
-  start(callback) {
+  start() {
+    if (!this.callback) {
+      const msg = 'Callback function is not set';
+      throw new Error(msg);
+    }
     this.#initPopulation();
-    this.#runAlgorithm(callback);
+    this.#runAlgorithm();
   }
 
   #initPopulation() {
     this.population = [];
 
     for (let i = 0; i < this.n; i++) {
-      this.population.push(newRandomIndividual());
+      this.population.push(this.callback.newRandomIndividual());
     }
   }
 
-  #runAlgorithm(callback) {
-    const onNextGenerationRun = () => callback(this.bestParent, this.bestFit);
+  #runAlgorithm() {
+    const onNextGenerationRun = () => this.callback.onNextGen(this.bestParent, this.bestFit);
     const checkThreshold = (counter, intervalId) => {
       if (counter >= this.threshold) {
         clearInterval(intervalId);
@@ -88,6 +91,7 @@ export class GeneticAlgorithm {
 
   #crossover() {
     const cluster = this.#cluster;
+    const callback = this.callback;
     const previousBest = this.bestParent;
     const previousBestFit = this.bestFit;
 
@@ -130,12 +134,12 @@ export class GeneticAlgorithm {
 
       gracedFn(individual) {
         const mate = randomIndividualDes(cluster);
-        const elite = randomEliteIndividual(cluster, newRandomIndividual());
+        const elite = randomEliteIndividual(cluster, callback.newRandomIndividual());
         return OffspringStrategy.createAndApproachElite(individual, mate, elite);
       },
       remainingFn(individual, fit) {
         if (fit <= Algorithm.maxFitToSubstituteRemaining) {
-          return newRandomIndividual();
+          return callback.newRandomIndividual();
         }
         if (Math.random() <= Algorithm.remainingLuckChance) {
           const mate = randomIndividualAsc(cluster);
@@ -169,10 +173,10 @@ export class GeneticAlgorithm {
 
   #setBestIndividual() {
     let selected = this.population[0];
-    let score = this.#getFitness(selected);
+    let score = this.callback.getFitness(selected);
 
     for (const individual of this.population) {
-      const fitness = this.#getFitness(individual);
+      const fitness = this.callback.getFitness(individual);
 
       if (fitness > score) {
         selected = individual;
@@ -185,14 +189,10 @@ export class GeneticAlgorithm {
 
   #buildSelector() {
     const selector = new Selector();
-    selector.fitnessFn = individual => this.#getFitness(individual);
+    selector.fitnessFn = individual => this.callback.getFitness(individual);
     selector.isEliteFn = (individual, fit) => fit >= Algorithm.eliteFitnessRangeMin;
     selector.isGracedFn = (individual, fit) => fit >= Algorithm.gracedFitnessRangeMin;
     return selector;
-  }
-
-  #getFitness(individual) {
-    return computeFitness(individual, this.target);
   }
 }
 
