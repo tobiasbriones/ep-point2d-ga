@@ -133,11 +133,17 @@ export class GeneticAlgorithm {
       },
 
       gracedFn(individual) {
+        if (individual === previousBest) {
+          return individual;
+        }
         const mate = randomIndividualDes(cluster);
         const elite = randomEliteIndividual(cluster, callback.newRandomIndividual());
         return OffspringStrategy.createAndApproachElite(individual, mate, elite);
       },
       remainingFn(individual, fit) {
+        if (individual === previousBest) {
+          return individual;
+        }
         if (fit <= Algorithm.maxFitToSubstituteRemaining) {
           return callback.newRandomIndividual();
         }
