@@ -1,0 +1,44 @@
+/*
+ * Copyright (c) 2020 Tobias Briones. All rights reserved.
+ *
+ * SPDX-License-Identifier: MIT
+ *
+ * This file is part of Example Project: Point2D GA.
+ *
+ * This source code is licensed under the MIT License found in the
+ * LICENSE file in the root directory of this source tree or at
+ * https://opensource.org/licenses/MIT.
+ */
+
+* {
+  font-family: 'Roboto', sans-serif;
+}
+
+header {
+  padding-bottom: 32px;
+}
+
+header h1 {
+  text-align: center;
+}
+
+header p {
+  text-align: center;
+}
+
+#grid,
+#fit {
+  display: block;
+  width: 400px;
+  height: 400px;
+  margin: auto;
+}
+
+#grid {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.3);
+  border-left: 1px solid rgba(0, 0, 0, 0.3);
+}
+
+#fit {
+  margin: 16px auto;
+}
