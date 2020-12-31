@@ -10,21 +10,17 @@
  * https://opensource.org/licenses/MIT.
  */
 
-
 import { computeDistance, Individual } from './ga/population.mjs';
 import { GeneticAlgorithm } from './ga/point2d-ga.mjs';
 
-export const CANVAS_WIDTH_PX = 400;
-export const CANVAS_HEIGHT_PX = 400;
-const TARGET_POINT_X = 125;
-const TARGET_POINT_Y = 270;
-const TARGET_POINT = new Individual(TARGET_POINT_X, TARGET_POINT_Y);
+const CANVAS = Object.freeze({ WIDTH_PX: 400, HEIGHT_PX: 400 });
+const DEF_TARGET_POINT = newDefaultTargetPoint();
 const TARGET_POINT_COLOR = '#FF0000';
 const OFFSPRING_POINT_COLOR = '#000000';
 
 class Main {
   constructor() {
-    this.target = TARGET_POINT;
+    this.target = DEF_TARGET_POINT;
     this.ga = new GeneticAlgorithm(this.target);
     this.fitDiv = null;
     this.canvas = null;
@@ -32,7 +28,7 @@ class Main {
   }
 
   getFitness(individual) {
-    return computeFitness(individual, this.target)
+    return computeFitness(individual, this.target);
   }
 
   onNextGen(strongest, fit) {
@@ -42,8 +38,8 @@ class Main {
   }
 
   newRandomIndividual() {
-    const x = Math.random() * CANVAS_WIDTH_PX;
-    const y = Math.random() * CANVAS_HEIGHT_PX;
+    const x = Math.random() * CANVAS.WIDTH_PX;
+    const y = Math.random() * CANVAS.HEIGHT_PX;
     return new Individual(x, y);
   }
 
@@ -75,7 +71,7 @@ class Main {
 
   drawPoint(point, color) {
     const x = point.x;
-    const y = point.y + CANVAS_HEIGHT_PX - 2 * point.y;
+    const y = point.y + CANVAS.HEIGHT_PX - 2 * point.y;
 
     this.ctx.fillStyle = color;
     this.ctx.beginPath();
@@ -101,9 +97,11 @@ class Main {
  * @returns {number} the fitness value in (0, 100)
  */
 export function computeFitness(individual, target) {
+  const reductionFactor = 0.04;
+
   const evalModifiedSigmoid = x => {
     // Slow down the exponential grow for values near [0, 100]
-    const reducedX = x / 25;
+    const reducedX = x * reductionFactor;
     return (-2 * Math.pow(Math.E, reducedX)) / (Math.pow(Math.E, reducedX) + 1) + 2;
   };
   const distance = computeDistance(individual, target);
@@ -113,6 +111,12 @@ export function computeFitness(individual, target) {
   // If distance = 50, fitness is 23
   // If distance = 100, fitness is 3
   return sigmoid * 100;
+}
+
+function newDefaultTargetPoint() {
+  const x = 125;
+  const y = 270;
+  return Object.freeze(new Individual(x, y));
 }
 
 // ------------------------------------------  SCRIPT  ------------------------------------------ //
