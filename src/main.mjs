@@ -11,7 +11,7 @@
  */
 
 
-import { Individual } from './ga/population.mjs';
+import { computeDistance, Individual } from './ga/population.mjs';
 import { GeneticAlgorithm } from './ga/point2d-ga.mjs';
 
 export const CANVAS_WIDTH_PX = 400;
@@ -68,6 +68,37 @@ class Main {
     this.ctx.arc(x, y, 8, 0, 2 * Math.PI);
     this.ctx.fill();
   }
+}
+
+/**
+ * Computes the fitness value for the given individual with respect to the given
+ * target point. The fitness value belongs to (0, 100) where the individual
+ * fitness is better as it approaches 100.
+ *
+ * For example:
+ *
+ * - fit 100: distance zero, great
+ *
+ * - fit near 0: distance sucks
+ *
+ * @param individual point to calculate the fitness value
+ * @param target reference point where the individual should get close to
+ *
+ * @returns {number} the fitness value in (0, 100)
+ */
+export function computeFitness(individual, target) {
+  const evalModifiedSigmoid = x => {
+    // Slow down the exponential grow for values near [0, 100]
+    const reducedX = x / 25;
+    return (-2 * Math.pow(Math.E, reducedX)) / (Math.pow(Math.E, reducedX) + 1) + 2;
+  };
+  const distance = computeDistance(individual, target);
+  const sigmoid = evalModifiedSigmoid(distance);
+
+  // If distance = 10, fitness is 80
+  // If distance = 50, fitness is 23
+  // If distance = 100, fitness is 3
+  return sigmoid * 100;
 }
 
 // ------------------------------------------  SCRIPT  ------------------------------------------ //

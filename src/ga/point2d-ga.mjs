@@ -10,7 +10,7 @@
  * https://opensource.org/licenses/MIT.
  */
 
-import { CANVAS_HEIGHT_PX, CANVAS_WIDTH_PX } from '../main.mjs';
+import { CANVAS_HEIGHT_PX, CANVAS_WIDTH_PX, computeFitness } from '../main.mjs';
 import { computeDistance, Individual, PopulationCluster, Selector } from './population.mjs';
 
 export const DEF_CONFIG = Object.freeze({
@@ -284,37 +284,6 @@ class OffspringStrategy {
       point.y * Math.cos(angle) + point.x * Math.sin(angle)
     );
   }
-}
-
-/**
- * Computes the fitness value for the given individual with respect to the given
- * target point. The fitness value belongs to (0, 100) where the individual
- * fitness is better as it approaches 100.
- *
- * For example:
- *
- * - fit 100: distance zero, great
- *
- * - fit near 0: distance sucks
- *
- * @param individual point to calculate the fitness value
- * @param target reference point where the individual should get close to
- *
- * @returns {number} the fitness value in (0, 100)
- */
-export function computeFitness(individual, target) {
-  const evalModifiedSigmoid = x => {
-    // Slow down the exponential grow for values near [0, 100]
-    const reducedX = x / 25;
-    return (-2 * Math.pow(Math.E, reducedX)) / (Math.pow(Math.E, reducedX) + 1) + 2;
-  };
-  const distance = computeDistance(individual, target);
-  const sigmoid = evalModifiedSigmoid(distance);
-
-  // If distance = 10, fitness is 80
-  // If distance = 50, fitness is 23
-  // If distance = 100, fitness is 3
-  return sigmoid * 100;
 }
 
 function newRandomIndividual() {
