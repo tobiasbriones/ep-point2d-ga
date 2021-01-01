@@ -98,18 +98,18 @@ export class PopulationCluster {
     this.#sort();
   }
 
-  map(fn) {
+  map(callback) {
     this.#validate();
 
-    const eliteMap = this.#elite.map(record => fn.eliteFn(
+    const eliteMap = this.#elite.map(record => callback.eliteFn(
       record.individual,
       record.fitnessValue
     ));
-    const gracedMap = this.#graced.map(record => fn.gracedFn(
+    const gracedMap = this.#graced.map(record => callback.gracedFn(
       record.individual,
       record.fitnessValue
     ));
-    const remainingMap = this.#remaining.map(record => fn.remainingFn(
+    const remainingMap = this.#remaining.map(record => callback.remainingFn(
       record.individual,
       record.fitnessValue
     ));
