@@ -20,8 +20,8 @@ export const IndividualClusterType = Object.freeze({
 
 /**
  * Creates a cluster of a given population when the individuals are categorized
- * into elite and remaining with/without grace. The elite cluster contains the
- * best fitted individuals of the population. The remaining with grace might
+ * into an elite and remaining with/without grace. The elite cluster contains
+ * the best-fitted individuals of the population. The remaining with grace might
  * make it to the next generation. The remaining without grace won't make it to
  * the next generation.
  *
