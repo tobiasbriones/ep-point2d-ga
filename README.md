@@ -24,6 +24,16 @@ into account is the job of the genetic algorithm.
 
 [![Screenshot 3](https://raw.githubusercontent.com/TobiasBriones/images/main/example-projects/example.cs.optimization.algorithm.web.point2d-ga/screenshot-3.png)](https://github.com/TobiasBriones/images/tree/main/example-projects)
 
+
+## Contact
+
+This software: [App](https://tobiasbriones.github.io/example.cs.optimization.algorithm.web.point2d-ga), 
+[GitHub Repository](https://github.com/TobiasBriones/example.cs.optimization.algorithm.web.point2d-ga)
+
+Tobias Briones: [GitHub](https://github.com/TobiasBriones)
+
+Example Project: [App](https://tobiasbriones.github.io/example-project)
+
 ## About
 
 **Example Project: Point2D GA**
