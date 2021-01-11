@@ -11,7 +11,7 @@
  */
 
 const passSymbol = '\u2714';
-const failSymbol = '\u2718 ';
+const failSymbol = '\u2718';
 
 export function it(description, fn) {
   try {
