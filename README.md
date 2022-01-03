@@ -1,49 +1,45 @@
 # Example Project: Point2D GA
 
-[![EP](https://raw.githubusercontent.com/TobiasBriones/images/main/example-projects/example.cs.optimization.algorithm.web.point2d-ga/ep-point2d-ga-badge.svg)](https://tobiasbriones.github.io/example-project/ep/point2d-ga)
+[![Project](https://raw.githubusercontent.com/tobiasbriones/ep-point2d-ga/static/badge.svg)](https://dev.mathsoftware.engineer/ep-point2d-ga/)
 &nbsp;
-[![GitHub Repository](https://raw.githubusercontent.com/TobiasBriones/general-images/main/example-projects/badges/ep-gh-repo-badge.svg)](https://github.com/TobiasBriones/example.cs.optimization.algorithm.web.point2d-ga)
+[![GitHub Repository](https://raw.githubusercontent.com/tobiasbriones/static/main/gh-badge.svg)](https://github.com/tobiasbriones/ep-point2d-ga)
 
-[![Project GitHub License](https://img.shields.io/github/license/TobiasBriones/example.cs.optimization.algorithm.web.point2d-ga.svg?style=flat-square)](https://github.com/TobiasBriones/example.cs.optimization.algorithm.web.point2d-ga/blob/main/LICENSE)
+[![GitHub Project License](https://img.shields.io/github/license/tobiasbriones/ep-point2d-ga.svg?style=flat-square)](https://github.com/tobiasbriones/ep-point2d-ga/blob/main/LICENSE)
 
-Javascript with canvas implementation of a genetic algorithm to make a point in the plane to
-converge to the desired location.
+Javascript with canvas implementation of a genetic algorithm to make a point in
+the plane to converge to the desired location.
 
-You can give the exact position to place the point wherever you want of course but what it's taken
-into account is the job of the genetic algorithm.
+You can give the exact position to place the point wherever you want of course
+but what it's taken into account is the job of the genetic algorithm.
 
 ## Screenshots
 
-[![Screenshot 1](https://raw.githubusercontent.com/TobiasBriones/images/main/example-projects/example.cs.optimization.algorithm.web.point2d-ga/screenshot-1.png)](https://github.com/TobiasBriones/images/tree/main/example-projects)
+![Screenshot 1](https://github.com/tobiasbriones/ep-point2d-ga/releases/download/v0.1.0/screenshot-1.png)
 
 ---
 
-[![Screenshot 2](https://raw.githubusercontent.com/TobiasBriones/images/main/example-projects/example.cs.optimization.algorithm.web.point2d-ga/screenshot-2.png)](https://github.com/TobiasBriones/images/tree/main/example-projects)
+![Screenshot 2](https://github.com/tobiasbriones/ep-point2d-ga/releases/download/v0.1.0/screenshot-2.png)
 
 ---
 
-[![Screenshot 3](https://raw.githubusercontent.com/TobiasBriones/images/main/example-projects/example.cs.optimization.algorithm.web.point2d-ga/screenshot-3.png)](https://github.com/TobiasBriones/images/tree/main/example-projects)
-
+![Screenshot 3](https://github.com/tobiasbriones/ep-point2d-ga/releases/download/v0.1.0/screenshot-3.png)
 
 ## Contact
 
-This software: [App](https://tobiasbriones.github.io/example.cs.optimization.algorithm.web.point2d-ga), 
-[GitHub Repository](https://github.com/TobiasBriones/example.cs.optimization.algorithm.web.point2d-ga)
+This Project: [App](https://point2d-ga.ep.dev.mathsoftware.engineer),
+[GitHub Repository](https://github.com/tobiasbriones/ep-point2d-ga)
 
-Tobias Briones: [GitHub](https://github.com/TobiasBriones)
-
-Example Project: [App](https://tobiasbriones.github.io/example-project)
+Tobias Briones: [GitHub](https://github.com/tobiasbriones)
 
 ## About
 
 **Example Project: Point2D GA**
 
-Javascript with canvas implementation of a genetic algorithm to make a point in the plane to
-converge to the desired location.
+Javascript with canvas implementation of a genetic algorithm to make a point in
+the plane to converge to the desired location.
 
 Copyright © 2019-2020 Tobias Briones. All rights reserved.
 
-
 ### License
 
-This software is licensed under the [MIT License](./LICENSE).
+This project is licensed under the [MIT License](./LICENSE).
