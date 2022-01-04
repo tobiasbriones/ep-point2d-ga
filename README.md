@@ -12,6 +12,8 @@ the plane to converge to the desired location.
 You can give the exact position to place the point wherever you want of course
 but what it's taken into account is the job of the genetic algorithm.
 
+Go to: [App](https://point2d-ga.ep.dev.mathsoftware.engineer)
+
 ## Screenshots
 
 ![Screenshot 1](https://github.com/tobiasbriones/ep-point2d-ga/releases/download/v0.1.0/screenshot-1.png)
@@ -25,9 +27,6 @@ but what it's taken into account is the job of the genetic algorithm.
 ![Screenshot 3](https://github.com/tobiasbriones/ep-point2d-ga/releases/download/v0.1.0/screenshot-3.png)
 
 ## Contact
-
-This Project: [App](https://point2d-ga.ep.dev.mathsoftware.engineer),
-[GitHub Repository](https://github.com/tobiasbriones/ep-point2d-ga)
 
 Tobias Briones: [GitHub](https://github.com/tobiasbriones)
 
