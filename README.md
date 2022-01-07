@@ -2,7 +2,7 @@
 
 [![Project](https://raw.githubusercontent.com/tobiasbriones/ep-point2d-ga/static/badge.svg)](https://dev.mathsoftware.engineer/ep-point2d-ga/)
 &nbsp;
-[![GitHub Repository](https://raw.githubusercontent.com/tobiasbriones/static/main/gh-badge.svg)](https://github.com/tobiasbriones/ep-point2d-ga)
+[![GitHub Repository](https://img.shields.io/static/v1?label=GITHUB&message=REPOSITORY&labelColor=555&color=0277bd&style=for-the-badge&logo=GITHUB)](https://github.com/tobiasbriones/ep-point2d-ga)
 
 [![GitHub Project License](https://img.shields.io/github/license/tobiasbriones/ep-point2d-ga.svg?style=flat-square)](https://github.com/tobiasbriones/ep-point2d-ga/blob/main/LICENSE)
 
